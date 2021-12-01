@@ -1,0 +1,34 @@
+# Docker compose version https://docs.docker.com/compose/compose-file
+version: '3.8'
+
+# Docker services
+services:
+  # https://hub.docker.com/_/caddy
+  caddy:
+    container_name: ${CONTAINER_NAME:-docker-reverse-proxy}
+    image: caddy:alpine
+    restart: unless-stopped
+    networks:
+      - reverse_proxy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - $PWD/config/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+
+# Docker networks
+networks:
+  reverse_proxy:
+    driver: "bridge"
+    name: ${NETWORK_NAME:-reverse_proxy}
+
+# Volumes
+volumes:
+  caddy_data:
+    external: true
+    name: caddy_data
+  caddy_config:
+    external: true
+    name: caddy_config

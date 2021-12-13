@@ -27,8 +27,6 @@ networks:
 # Volumes
 volumes:
   caddy_data:
-    external: true
     name: caddy_data
   caddy_config:
-    external: true
     name: caddy_config

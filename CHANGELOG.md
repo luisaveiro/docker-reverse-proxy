@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.1.2] 2022-05-03
+### Fixed
+- Connection refuse when triggering the `caddy reload` command.
+
 ## [v0.1.1] 2021-12-13
 ### Fixed
 - Docker Compose not creating volumes.

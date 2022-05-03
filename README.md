@@ -282,15 +282,25 @@ $ docker run --rm --name=website_app --expose 8080 --network=reverse_proxy nginx
 additional dependencies.
 
 **Q:** If I change the Caddyfile, do I need to restart the Docker container?  
-**A:** According to Caddy Docker Hub page, Caddy comes with a `caddy reload` 
+**A:** Yes, You will need to restart Caddy to allow the reverse proxy to reload 
+changes in your configuration. There are two commands you can use to restart 
+Caddy.
+
+According to the Caddy Docker Hub page, Caddy comes with a `caddy reload` 
 command. You can run the following command to reload Caddy configuration:
 
-```
+```bash
 $ docker exec -w /etc/caddy docker-reverse-proxy caddy reload
 ```
 
 The working directory is set to `/etc/caddy` so Caddy can find your Caddyfile 
 without additional arguments.
+
+Alternatively, you can restart the Docker container by using the following command.
+
+```bash
+$ docker-compose restart
+```
 
 ## Useful Tips
 

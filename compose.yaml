@@ -1,0 +1,42 @@
+#--------------------------------------------------------------------------
+# ! The Docker Compose file is configured for local environments.
+# ! Do not deploy the Caddy Docker Compose file in production environments.
+#--------------------------------------------------------------------------
+
+# Docker compose version - https://docs.docker.com/compose/compose-file
+version: "3.9"
+
+# The Docker services.
+services:
+  # The Caddy server container.
+  caddy:
+    # https://hub.docker.com/_/caddy
+    image: caddy:alpine
+    container_name: ${CONTAINER_NAME:-docker-reverse-proxy}
+    restart: unless-stopped
+    networks:
+      - reverse_proxy
+    # Map the app container exposed port to the host port.
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    # Caddy config
+      - $PWD/config/Caddyfile:/etc/caddy/Caddyfile
+    # Caddy certificate authority (CA)
+      - $PWD/certificate-authority:/data/caddy/pki/authorities/local
+
+# The Docker networks.
+networks:
+  reverse_proxy:
+    driver: "bridge"
+    name: ${NETWORK_NAME:-reverse_proxy}
+
+# The Docker volumes.
+volumes:
+  caddy_data:
+    name: caddy_data
+  caddy_config:
+    name: caddy_config

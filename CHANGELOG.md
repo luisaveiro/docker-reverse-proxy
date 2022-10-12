@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.0] 2022-10-12
+### Added
+- TLS configuration in `Caddyfile` example file to enable Caddy HTTPS support.
+- Developer-friendly comments for environment variables in the DotEnv example file.
+- "Trusting Caddy certificate authority" steps in Readme.
+
+### Changed
+- Renamed Docker Compose file to follow compose specifications.
+- Readme to adopt Compose V2 specifications.
+
 ## [v0.1.2] 2022-05-03
 ### Fixed
 - Connection refuse when triggering the `caddy reload` command.

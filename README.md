@@ -23,21 +23,24 @@
     <a href="#getting-started">Getting Started</a> •
     <a href="#download">Download</a> •
     <a href="#how-to-use">How To Use</a> •
-    <a href="#faq">FAQ</a>
+    <a href="#faq">FAQ</a> •
+    <a href="#useful-tips">Useful Tips</a>
 </p>
 <p align="center">
-    <a href="#useful-tips">Useful Tips</a> •
     <a href="#changelog">Changelog</a> •
     <a href="#contributing">Contributing</a> •
     <a href="#security-vulnerabilities">Security Vulnerabilities</a> •
     <a href="#credits">Credits</a> •
+    <a href="#Sponsor">Sponsor</a> •
     <a href="#license">License</a>
 </p>
 
 ## About
 
-This repository offers a simple approach to have [Caddy](https://caddyserver.com/) 
-Server has a local reverse proxy for your [Docker](https://www.docker.com/) containers.
+This repository offers a simple approach to having [Caddy Server](https://caddyserver.com/) 
+as a local reverse proxy for your [Docker](https://www.docker.com/) containers. 
+Caddy Server is the first and only web server to use HTTPS automatically with 
+no extra configuration or separate tooling required.
 
 **Why would you need a local reverse proxy?**  
 With a hosts file, you can only map hostnames to IP addresses. Hosts file does 
@@ -72,7 +75,7 @@ the [Installation Guide](https://caddyserver.com/docs/install).
 
 You will need to make sure your system meets the following prerequisites:
 
-- Docker Engine >= 19.03.0
+- Docker Engine >= 20.10.00
 
 This repository utilizes [Docker](https://www.docker.com/) to run Caddy. So, 
 before using ***Docker Reverse Proxy***, make sure you have Docker installed 
@@ -139,8 +142,14 @@ Caddyfile to match the domain entry of your hosts file.
 The `Caddyfile.example` file has an example of the structure of the site block.
 
 ```ini
-# Site block
+# HTTP site block
 <hostname>:80 {
+  reverse_proxy <container-name>:<port>
+}
+
+# HTTPS site block
+<hostname>:443 {
+  tls internal
   reverse_proxy <container-name>:<port>
 }
 ```
@@ -165,6 +174,11 @@ directive.
 The reverse_proxy argument is the upstream which Caddy will proxy. In our use 
 case the upstream will be the Docker container name and the exposed port. 
 
+- **TLS (HTTPS only)**  
+The TLS directive is to configure HTTPS for the site block. By using the 
+internal option, we are using Caddy's internal, locally-trusted CA to produce 
+certificates for the site.
+
 Below is an example of a configured site block:
 
 ```ini
@@ -172,20 +186,26 @@ Below is an example of a configured site block:
 website.local:80 {
   reverse_proxy website_app:8080
 }
+
+# Personal website using HTTPS
+website.local:443 {
+  tls internal
+  reverse_proxy website_app:8080
+}
 ```
 
 #### 4. <ins>Start Caddy Docker container</ins>
 
 After you have configured your Caddyfile, you can start Caddy Docker container.
-***Docker Reverse Proxy*** includes a `docker-compose.yml` file with Caddy 
+***Docker Reverse Proxy*** includes a `compose.yaml` file with Caddy 
 pre-configured. You can run the following command:
 
 ```bash
 # Start Caddy Docker container
-$ docker-compose up
+$ docker compose up
 
 # Or start Caddy Docker container detached mode
-$ docker-compose up -d
+$ docker compose up -d
 ```
 
 Docker will create the Caddy container which is called `docker-reverse-proxy`. 
@@ -196,10 +216,18 @@ DotEnv file and override the Docker Compose variables. Below is an example of
 the DotEnv variables.
 
 ```ini
-# Docker container
+#--------------------------------------------------------------------------
+# Container env
+#--------------------------------------------------------------------------
+
+# The Caddy Server Docker container name. | default: docker-reverse-proxy
 CONTAINER_NAME="docker-reverse-proxy"
 
-# Docker container network
+#--------------------------------------------------------------------------
+# Network env
+#--------------------------------------------------------------------------
+
+# The Docker network for the containers. | default: reverse_proxy
 NETWORK_NAME="reverse_proxy"
 ```
 
@@ -211,7 +239,57 @@ You can run the following command in the terminal to create your DotEnv file.
 $ cp .env.example .env
 ```
 
-#### 5. <ins>Attach Docker containers to Caddy network</ins>
+#### 5. <ins>Trusting Caddy certificate authority (CA)</ins>
+
+If you are not planning to use HTTPS for local development, you can skip this 
+step.
+
+Caddy generates its own certificate authority (CA) and uses it to sign 
+certificates. After Caddy's root CA is created, you will need to add the 
+certificate to your local trust store. I have outline the steps you would need 
+to take.
+
+> **Note**
+> : Please ensure you have the latest update of the Caddy Docker image.
+
+Caddy container will create and mount a folder called `certificate-authority`. 
+In this folder you will see certificate and key files. You will be installing 
+the `root.crt` in your local trust store.
+
+Open the "Keychain Access" app and drag and drop the certificate into the 
+"login" keychain. Open the certificate (it should be called something like 
+"Caddy Local Authority") and configure it to "Always Trust", as shown below.
+
+<p align="center">
+    <a>
+    <img 
+        src="./images/mac-keychain-access.png" 
+        alt="Trust Caddy Local Authority certificate"
+        width="50%">
+    </a>
+    <br>
+    <sub><sup>Trust Caddy Local Authority certificate.</sup></sub>
+</p>
+
+> **Note**
+> : Firefox has its own local trust store. You will be required to complete 
+one additional step.
+
+In Firefox, type 'about:config' in the address bar. If prompted, accept any 
+warnings. Set "security.enterprise_roots.enabled" as true.
+
+<p align="center">
+    <a>
+    <img 
+        src="./images/firefox-settings.png" 
+        alt="Firefox settings"
+        width="50%">
+    </a>
+    <br>
+    <sub><sup>Firefox settings for local trust store.</sup></sub>
+</p>
+
+#### 6. <ins>Attach Docker containers to Caddy network</ins>
 
 Once Caddy container is up and running, you will need to configure your Docker 
 containers by attaching the **reverse_proxy** network to your container(s), 
@@ -242,7 +320,7 @@ website.local:80 {
 ##### **Docker Compose**
 
 ```yaml
-version: '3.8'
+version: '3.9'
 
 services:
   website:
@@ -275,11 +353,6 @@ $ docker run --rm --name=website_app --expose 8080 --network=reverse_proxy nginx
 ```
 
 ## FAQ
-
-**Q:** Are you planning to add local HTTPS support?  
-**A:** Yes, this feature is on my roadmap. I'm researching how to implement 
-[mkcert](https://github.com/FiloSottile/mkcert) without the need to install 
-additional dependencies.
 
 **Q:** If I change the Caddyfile, do I need to restart the Docker container?  
 **A:** Yes, You will need to restart Caddy to allow the reverse proxy to reload 
@@ -332,6 +405,14 @@ about how to proceed.
 The illustration used in the project is from [unDraw (created by Katerina Limpitsouni)](https://undraw.co/). 
 All product names, logos, brands, trademarks and registered trademarks are 
 property of their respective owners.
+
+## Sponsor
+
+Do you like this project? Support it by donating.
+
+<a href="https://www.buymeacoffee.com/luisaveiro">
+  <img src="./images/bmc-button.svg" alt="Code Review" width="144">
+</a>
 
 ## License
 

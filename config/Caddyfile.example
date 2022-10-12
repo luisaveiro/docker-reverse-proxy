@@ -5,7 +5,8 @@
 
 {
   debug
-  auto_https off
+  local_certs
+  auto_https disable_redirects
   admin 0.0.0.0:2019
 }
 
@@ -14,7 +15,13 @@
 # https://caddyserver.com/docs/caddyfile/directives/reverse_proxy
 #--------------------------------------------------------------------------
 
-# Site block
+# HTTP site block
 <hostname>:80 {
+  reverse_proxy <container-name>:<port>
+}
+
+# HTTPS site block
+<hostname>:443 {
+  tls internal
   reverse_proxy <container-name>:<port>
 }

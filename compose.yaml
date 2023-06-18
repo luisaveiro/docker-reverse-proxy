@@ -6,13 +6,16 @@
 # Docker compose version - https://docs.docker.com/compose/compose-file
 version: "3.9"
 
+# Sets the project name.
+name: docker-reverse-proxy
+
 # The Docker services.
 services:
   # The Caddy server container.
   caddy:
     # https://hub.docker.com/_/caddy
     image: caddy:alpine
-    container_name: ${CONTAINER_NAME:-docker-reverse-proxy}
+    container_name: ${CONTAINER_NAME:-reverse_proxy}
     restart: unless-stopped
     networks:
       - reverse_proxy
@@ -20,6 +23,7 @@ services:
     ports:
       - 80:80
       - 443:443
+      - ${ADMIN_API_PORT:-2019}:2019
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -37,6 +41,8 @@ networks:
 # The Docker volumes.
 volumes:
   caddy_data:
-    name: caddy_data
+    driver: "local"
+    name: "${CONTAINER_VOLUME_DATA_NAME:-reverse_proxy_data}"
   caddy_config:
-    name: caddy_config
+    driver: "local"
+    name: "${CONTAINER_VOLUME_CONFIG_NAME:-reverse_proxy_config}"

@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.0.0] 2023-06-18
+### Added
+- Caddy REST API port is included and configured in the Docker Compose file.
+
+### Changed
+- Updated Docker Compose file to allow better customisation with environment variables.
+- Update DotEnv example file formatting.
+
 ## [v0.2.0] 2022-10-12
 ### Added
 - TLS configuration in `Caddyfile` example file to enable Caddy HTTPS support.

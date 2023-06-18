@@ -211,24 +211,45 @@ $ docker compose up -d
 Docker will create the Caddy container which is called `docker-reverse-proxy`. 
 The container will be attached to a network called `reverse_proxy`. 
 
-If you want to change the container name or network name, you can create a 
-DotEnv file and override the Docker Compose variables. Below is an example of 
-the DotEnv variables.
+If you want to change the container name, network name or volume names, you can 
+create a DotEnv file and override the Docker Compose variables. Below is an 
+example of the DotEnv variables.
 
 ```ini
+#--------------------------------------------------------------------------
+# Docker env
+#--------------------------------------------------------------------------
+
+# The project name. | default: reverse_proxy
+APP_NAME="reverse_proxy"
+
 #--------------------------------------------------------------------------
 # Container env
 #--------------------------------------------------------------------------
 
-# The Caddy Server Docker container name. | default: docker-reverse-proxy
-CONTAINER_NAME="docker-reverse-proxy"
+# The Caddy Server Docker container name. | default: reverse_proxy
+CONTAINER_NAME="${APP_NAME}"
 
 #--------------------------------------------------------------------------
 # Network env
 #--------------------------------------------------------------------------
 
+# Map the Admin API port to the host port. | default: 2019
+ADMIN_API_PORT=2019
+
 # The Docker network for the containers. | default: reverse_proxy
 NETWORK_NAME="reverse_proxy"
+
+#--------------------------------------------------------------------------
+# Volume env
+#--------------------------------------------------------------------------
+
+# The app container data volume. | default: reverse_proxy_data
+CONTAINER_VOLUME_DATA_NAME="${CONTAINER_NAME}_data"
+
+# The app container config volume. | default: reverse_proxy_config
+CONTAINER_VOLUME_CONFIG_NAME="${CONTAINER_NAME}_config"
+
 ```
 
 ***Docker Reverse Proxy*** includes a `.env.example` file to get you started. 
@@ -353,6 +374,19 @@ $ docker run --rm --name=website_app --expose 8080 --network=reverse_proxy nginx
 ```
 
 ## FAQ
+
+**Q:** Can I configure Caddy via the REST API?  
+**A:** Yes, You can access Caddy administration endpoints via HTTP by connect to 
+http://localhost:2019. You can change the the API port in the DotEnv file.
+
+```ini
+#--------------------------------------------------------------------------
+# Network env
+#--------------------------------------------------------------------------
+
+# Map the Admin API port to the host port. | default: 2019
+ADMIN_API_PORT=2019
+```
 
 **Q:** If I change the Caddyfile, do I need to restart the Docker container?  
 **A:** Yes, You will need to restart Caddy to allow the reverse proxy to reload 

@@ -28,7 +28,7 @@ Please link to the issue here:
 - [ ] Other (documentation).
 
 ---
-#### Are breaking change introduced?
+#### Are breaking changes introduced?
 <!-- Does this PR introduce a breaking change? -->
 <!-- What are the breaking changes and what changes are needed in developer's environments due to this PR? -->
 

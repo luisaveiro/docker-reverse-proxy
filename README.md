@@ -61,7 +61,8 @@ locally with a multi-tenant subdomain application.
 
 ## Disclaimer
 
-**Please note:** ***Docker Reverse Proxy*** is not affiliated with Stack Holdings 
+> [!IMPORTANT]  
+> ***Docker Reverse Proxy*** is not affiliated with Stack Holdings 
 GmbH or Docker, Inc and is not an official product from either company. 
 
 "Caddy" is a registered trademark of Stack Holdings GmbH.
@@ -110,7 +111,8 @@ The structure of the hostname entry must be your loopback IP Address
 127.0.0.1 domain.local
 ```
 
-**Please note:** the hosts file **does not support wildcard** (`*`) for domains 
+> [!NOTE]  
+> The hosts file **does not support wildcard** (`*`) for domains 
 or subdomains. You will need to have an entry for each domain and subdomain you 
 wish to use for the reverse proxy in your hosts file.
 
@@ -270,8 +272,8 @@ certificates. After Caddy's root CA is created, you will need to add the
 certificate to your local trust store. I have outline the steps you would need 
 to take.
 
-> **Note**
-> : Please ensure you have the latest update of the Caddy Docker image.
+> [!IMPORTANT]  
+> Please ensure you have the latest update of the Caddy Docker image.
 
 Caddy container will create and mount a folder called `certificate-authority`. 
 In this folder you will see certificate and key files. You will be installing 
@@ -292,8 +294,8 @@ Open the "Keychain Access" app and drag and drop the certificate into the
     <sub><sup>Trust Caddy Local Authority certificate.</sup></sub>
 </p>
 
-> **Note**
-> : Firefox has its own local trust store. You will be required to complete 
+> [!TIP] 
+> Firefox has its own local trust store. You will be required to complete 
 one additional step.
 
 In Firefox, type 'about:config' in the address bar. If prompted, accept any 

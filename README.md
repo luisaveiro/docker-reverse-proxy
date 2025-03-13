@@ -1,10 +1,4 @@
 <p align="center">
-    <a href="https://supportukrainenow.org" target="_blank">
-        <img src="./images/standwithukraine.png" alt="#StandWithUkraine" width="100%">
-    </a>
-</p>
-<br/>
-<p align="center">
     <a href="http://github.com/luisaveiro/docker-reverse-proxy">
         <img 
             src="./images/programming.svg" 
@@ -93,6 +87,16 @@ $ git clone git@github.com:luisaveiro/docker-reverse-proxy.git --branch main --s
 ```
 
 ## How To Use
+
+Below is the current directory structure for the ***Docker Reverse Proxy*** repository.
+
+```
+.
++-- config
+|   +-- Caddyfile.example
++-- .env.example
++-- compose.yaml
+```
 
 There are a few steps you need to follow before you can have Caddy set up and 
 running as a reverse proxy for your Docker containers. I have outline the steps 

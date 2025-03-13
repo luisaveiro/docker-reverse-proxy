@@ -3,9 +3,6 @@
 # ! Do not deploy the Caddy Docker Compose file in production environments.
 #--------------------------------------------------------------------------
 
-# Docker compose version - https://docs.docker.com/compose/compose-file
-version: "3.9"
-
 # Sets the project name.
 name: docker-reverse-proxy
 

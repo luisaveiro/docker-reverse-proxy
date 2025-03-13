@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.0.1] 2025-03-13
+### Removed
+- The obsolete 'version' attribute in Docker Compose file.
+
 ## [v1.0.0] 2023-06-18
 ### Added
 - Caddy REST API port is included and configured in the Docker Compose file.
